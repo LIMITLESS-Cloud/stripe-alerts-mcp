@@ -1,84 +1,64 @@
-# 📋 Notion Task Autopilot MCP Server
+# 💼 Stripe Business Alerts MCP Server
 
-**Your Notion database on autopilot.** A smart productivity layer that turns your Notion task database into an intelligent task management system — with daily standups, overdue alerts, session summaries, and bulk operations.
+**Never miss a failed payment again.** A real-time business intelligence MCP server that monitors your Stripe account for failed payments, tracks MRR, subscription changes, and revenue — all accessible from your AI assistant.
 
-Not just another Notion wrapper. An opinionated productivity engine built for founders, freelancers, and teams who live in Notion.
+Built for SaaS founders, freelancers, and small business owners who want their AI to watch their revenue while they focus on building.
 
 ## ✨ Features
 
 | Tool | What it does |
 |------|-------------|
-| `notion_autopilot_daily_standup` | Auto-generated standup: in-progress, due today, overdue, blocked |
-| `notion_autopilot_list_tasks` | Smart filtering: active, overdue, today, upcoming, done, blocked |
-| `notion_autopilot_create_task` | Create tasks with smart defaults and auto-tagging |
-| `notion_autopilot_update_status` | Bulk-update 1-20 tasks in a single call |
-| `notion_autopilot_session_summary` | Create formatted session summaries as child pages |
-| `notion_autopilot_overdue_check` | Dedicated overdue detection for alerts and automations |
+| `stripe_alerts_daily_digest` | Complete daily business digest — all metrics in one call |
+| `stripe_alerts_overview` | Business health: active subs, MRR, past-due accounts |
+| `stripe_alerts_failed_payments` | Find failed & incomplete payments that need attention |
+| `stripe_alerts_revenue` | Revenue snapshot: today, yesterday, week, or month |
+| `stripe_alerts_subscriptions` | Track new signups, cancellations, and plan changes |
 
-### What Makes This Different
+### Why This Matters
 
-The official Notion MCP gives you raw CRUD. This gives you **workflows**:
+- 💸 **Catch revenue leaks**: Failed payments silently drain SaaS revenue. This catches them immediately.
+- 📊 **Know your MRR**: Automatic calculation from all active subscriptions, multi-currency support.
+- 📉 **Track churn in real-time**: See cancellations the moment they happen, not at month-end.
+- 🤖 **AI-native**: Designed for Claude, ChatGPT, Cursor — not another dashboard you won't check.
 
-- 🚀 **Daily Standup in one call** — not 4 separate queries you assemble yourself
-- ⚠️ **Overdue detection** — scans non-completed tasks against due dates automatically
-- 📝 **Session summaries** — Markdown content auto-converted to proper Notion blocks
-- 🔄 **Bulk operations** — update 20 tasks in one call, not 20 separate API calls
-- 🏷️ **Fully configurable** — property names, status values, all via environment variables
+### Multi-Currency Support
 
-### Configurable Property Names
-
-Every Notion database is different. Configure everything via env vars:
-
-```bash
-NOTION_PROP_TITLE="Name"              # or "Task", "Title", "Aufgabe"
-NOTION_PROP_STATUS="Status"           # any status property
-NOTION_PROP_PRIORITY="Priority"       # or "Priorität", "Urgency"
-NOTION_PROP_DUE_DATE="Due Date"       # or "Deadline", "Fällig am"
-NOTION_PROP_PROJECT="Project"         # or "Projekt", "Category"
-NOTION_PROP_TAGS="Tags"               # multi-select property
-
-NOTION_STATUS_TODO="To Do"            # or "Offen", "Open"
-NOTION_STATUS_IN_PROGRESS="In Progress"  # or "In Arbeit", "Doing"
-NOTION_STATUS_DONE="Done"             # or "Erledigt", "Completed"
-NOTION_STATUS_BLOCKED="Blocked"       # or "Blockiert", "Waiting"
-```
+Automatic detection and formatting for EUR, USD, GBP, CHF, JPY, CAD, AUD, and more.
 
 ## 🚀 Quick Start
 
-### 1. Create a Notion Integration
+### 1. Get Your Stripe API Key
 
-Go to [Notion Integrations](https://www.notion.so/my-integrations) → New Integration → Copy the API key.
+Go to [Stripe Dashboard → API Keys](https://dashboard.stripe.com/apikeys) and copy your **Secret Key** (starts with `sk_live_` or `sk_test_`).
 
-**Then share your task database** with the integration (click ••• in the database → Add connections → select your integration).
+> ⚠️ Use a **Restricted Key** with read-only access for maximum security. Required permissions: Charges (Read), Payment Intents (Read), Subscriptions (Read), Events (Read).
 
 ### 2. Install
 
 ```bash
-pip install notion-autopilot-mcp
+pip install stripe-alerts-mcp
 ```
 
 ### 3. Configure
 
 ```bash
-export NOTION_API_KEY="ntn_your_key_here"
-export NOTION_DATABASE_ID="your_database_id"
-export NOTION_SUMMARIES_PAGE_ID="page_id_for_summaries"  # optional
+export STRIPE_API_KEY="sk_live_your_key_here"
+export STRIPE_DEFAULT_CURRENCY="eur"     # optional, default: eur
+export STRIPE_LOOKBACK_DAYS="7"          # optional, default: 7
 ```
 
 ### 4. Add to your MCP client
 
+**Claude Desktop / Cursor / VS Code:**
+
 ```json
 {
   "mcpServers": {
-    "notion-autopilot": {
+    "stripe-alerts": {
       "command": "python",
       "args": ["-m", "server"],
       "env": {
-        "NOTION_API_KEY": "ntn_your_key",
-        "NOTION_DATABASE_ID": "your_db_id",
-        "NOTION_PROP_STATUS": "Status",
-        "NOTION_STATUS_TODO": "To Do",
-        "NOTION_STATUS_DONE": "Done"
+        "STRIPE_API_KEY": "sk_live_your_key_here"
       }
     }
   }
@@ -87,43 +67,63 @@ export NOTION_SUMMARIES_PAGE_ID="page_id_for_summaries"  # optional
 
 ## 📋 Example Output
 
-### Daily Standup
+### Daily Digest
 ```
-# 🚀 Daily Standup
-**Tuesday, April 01, 2026**
+# 💼 Stripe Daily Digest
+**Tuesday, April 01, 2026** — Generated at 07:00 UTC
 
 ---
 
-### 🔄 In Progress (3)
-- 🔄 🔴 **Build Morning Briefing MCP** — In Progress | Due: 2026-04-02 | Project: NEXUS
-- 🔄 🟡 **LinkedIn Profile Optimization** — In Progress | Project: Marketing
-- 🔄 🟢 **Update SHOTVO landing page** — In Progress
+### 📊 Business Health Overview
 
-### 📅 Due Today (1)
-- 📋 🔴 **Send SCIO demo follow-up** — To Do | Due: 2026-04-01 | Project: SCIO
+🟢 **Active Subscriptions:** 47
+💰 **Monthly Recurring Revenue (MRR):** €2,847.00
+🔵 **Trialing:** 3
+🔴 **Past Due:** 2 ⚠️ Attention needed!
 
-### ⚠️ Overdue (2)
-- 📋 🔴 **Renew Meta Access Token** — To Do | Due: 2026-03-28 ⚠️ OVERDUE
-- 🔄 🟡 **Fix n8n webhook timeout** — In Progress | Due: 2026-03-30 ⚠️ OVERDUE
+### 💰 Revenue — Today (01.04.2026)
+
+**Total:** €489.00
+**Transactions:** 8
+
+**Top transactions:**
+- €149.00 — Enterprise Plan (Annual)
+- €79.00 — Pro Plan
+- €58.00 — LIMITLESS SPS Generator
+
+### ✅ Failed Payments
+
+No failed payments found. All clear!
+
+### 🔄 Subscription Changes (3 events)
+
+**🟢 New Subscriptions (2):**
+  - Customer cus_abc123 — €29.99/mo
+  - Customer cus_def456 — €14.99/mo
+
+**🚫 Cancellations (1):**
+  - Customer cus_ghi789 — Reason: too_expensive
+
+**Net Change:** 📈 +1
 
 ---
-*Powered by Notion Task Autopilot MCP — LIMITLESS Automation*
+*Powered by Stripe Business Alerts MCP — LIMITLESS Automation*
 ```
 
 ## 🛠️ Use Cases
 
-- **Morning briefing**: Combine with Morning Briefing MCP for a complete daily overview
-- **End-of-session sync**: Create a session summary and bulk-update task statuses
-- **Slack/Telegram alerts**: Pipe overdue checks into messaging via n8n/Zapier
-- **Weekly reviews**: List completed tasks and generate progress reports
-- **Team standups**: Auto-generate standup notes from your shared Notion board
+- **Morning briefings**: "How's my business doing today?" — one tool call, full picture.
+- **Failed payment alerts**: Pipe into Slack/Telegram via n8n for instant notifications.
+- **Weekly reports**: Automate business reports with the daily digest tool.
+- **Churn monitoring**: Track cancellations and reasons in real-time.
+- **Revenue forecasting**: Feed JSON output into dashboards or spreadsheets.
 
 ## 🔒 Security
 
-- Uses Notion's official API with integration tokens
-- Read and write operations clearly annotated (readOnlyHint)
-- No data stored — all queries are live against your Notion workspace
-- Supports granular integration permissions
+- Uses Stripe's official REST API with key-based auth
+- All tools are **read-only** — no writes, no modifications, no risk
+- Supports restricted API keys for minimal permissions
+- No data stored — all queries are live
 
 ## 📄 License
 
