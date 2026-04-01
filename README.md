@@ -128,3 +128,9 @@ No failed payments found. All clear!
 ## 📄 License
 
 MIT — Built by [LIMITLESS Automation](https://limitless-automation.com)
+
+## 🚀 Get Pro
+
+Free tier available on [MCPize](https://mcpize.com/mcp/stripe-alerts) — 50 requests/month, no credit card needed. Upgrade to Pro for daily digests and unlimited alerts.
+
+[![Available on MCPize](https://img.shields.io/badge/MCPize-Available-purple)](https://mcpize.com/mcp/stripe-alerts)
